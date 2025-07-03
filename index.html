@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prayer Times Widget</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fdf6f0;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+      max-width: 300px;
+    }
+    h2 { color: #3b3b3b; }
+    ul { padding-left: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h2>🕌 Prayer Times</h2>
+  <div id="location">📍 Loading...</div>
+  <ul id="prayer-times"></ul>
+
+  <script>
+    // 1. Get IP-based location
+    fetch("http://ip-api.com/json/")
+      .then(res => res.json())
+      .then(location => {
+        document.getElementById("location").textContent = `📍 ${location.city}, ${location.country}`;
+
+        // 2. Get prayer times from Aladhan API
+        const today = new Date().toISOString().split('T')[0];
+        fetch(`https://api.aladhan.com/v1/timingsByCity?city=${location.city}&country=${location.country}`)
+          .then(res => res.json())
+          .then(data => {
+            const timings = data.data.timings;
+            const list = document.getElementById("prayer-times");
+            for (const prayer in timings) {
+              const li = document.createElement("li");
+              li.textContent = `${prayer}: ${timings[prayer]}`;
+              list.appendChild(li);
+            }
+          });
+      });
+  </script>
+</body>
+</html>
