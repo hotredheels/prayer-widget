@@ -5,14 +5,35 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #fdf6f0;
+      background: transparent;
       padding: 1rem;
       border-radius: 10px;
-      box-shadow: 0 0 10px #ccc;
+      box-shadow: none;
       max-width: 300px;
+      margin: 0;
     }
-    h2 { color: #3b3b3b; }
-    ul { padding-left: 1.2rem; }
+
+    h2 {
+      color: #3b3b3b;
+      margin-bottom: 0.5rem;
+    }
+
+    #location {
+      margin-bottom: 0.8rem;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin: 0;
+    }
+
+    li {
+      margin-bottom: 0.3rem;
+    }
+
+    .prayer-name {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -21,13 +42,11 @@
   <ul id="prayer-times"></ul>
 
   <script>
-    // Use HTTPS-friendly location API
     fetch("https://ipapi.co/json/")
       .then(res => res.json())
       .then(location => {
         document.getElementById("location").textContent = `📍 ${location.city}, ${location.country}`;
 
-        // Now fetch prayer times
         fetch(`https://api.aladhan.com/v1/timingsByCity?city=${location.city}&country=${location.country}`)
           .then(res => res.json())
           .then(data => {
@@ -35,7 +54,7 @@
             const list = document.getElementById("prayer-times");
             for (const prayer in timings) {
               const li = document.createElement("li");
-              li.textContent = `${prayer}: ${timings[prayer]}`;
+              li.innerHTML = `<span class="prayer-name">${prayer}</span>: ${timings[prayer]}`;
               list.appendChild(li);
             }
           });
